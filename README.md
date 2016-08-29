@@ -18,11 +18,11 @@ $app['users'] = $app->share(function() use ($app) { return new MyApp\UserProvide
 
 $app['security.firewalls'] =  [
 	'fb_canvas' => [		
-			'pattern' => '^/facebook_canvas/',
+			'pattern' => '^/fb_canvas/',
 			'users' => $app['users'],
 			'anonymous' => true,
 			'facebook_canvas' => [
-				'login_path' => '/facebook_canvas/',
+				'login_path' => '/registration',
 				'app_secret' => $facebook_app_secret
 			]
 	],
@@ -57,7 +57,7 @@ class UserProvider implements UserProviderInterface,FacebookCanvasUserProviderIn
  
 	public function loadUserByFacebookUid($fbUid)
 	{
-		$username = $this->db->fetchColumn('SELECT username FROM user WHERE facebook_uid=?', [$fb_uid]);
+		$username = $this->db->fetchColumn('SELECT username FROM user WHERE facebook_uid=?', [$fbUid]);
 
 		return $this->loadUserByUsername($username);
 	}
