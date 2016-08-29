@@ -1,0 +1,21 @@
+{
+    "name": "junker/facebook-canvas-service-provider",
+    "description": "Facebook Canvas Service Provider for Silex",
+    "keywords": ["silex","facebook","facebook canvas","security"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmitry Kosenkov",
+            "email": "dk-junker@ya.ru"
+        }
+    ],
+    "require": {
+        "silex/silex": "1.*",
+        "facebook/php-sdk-v4": "~4@stable"
+    },
+    "autoload": {
+        "psr-0" : {
+            "Junker" : "src/"
+        }
+    }
+}
