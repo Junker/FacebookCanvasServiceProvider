@@ -26,16 +26,17 @@ class FacebookCanvasServiceProvider implements ServiceProviderInterface
 				    return new FacebookCanvasAuthenticationEntryPoint($app, $app['security.http_utils'], $options['login_path']);
 				};
 
-				$app['security.authentication_listener.'.$full_name] = function() use ($app) {
+				$app['security.authentication_listener.'.$full_name] = function() use ($app, $options) {
 					return new FacebookCanvasListener($app['security.token_storage'],
 						$app['security.authentication_manager'],
 						$app['dispatcher'],
-						self::PROVIDER_KEY
+						self::PROVIDER_KEY,
+						$options['app_secret']
 					);
 				};
 
-				$app['security.authentication_provider.'.$full_name] = function() use ($app, $name, $options) {
-					return new FacebookCanvasProvider($app['security.user_provider.'.$name], $app['security.user_checker'], self::PROVIDER_KEY, $options['app_secret']);
+				$app['security.authentication_provider.'.$full_name] = function() use ($app, $name) {
+					return new FacebookCanvasProvider($app['security.user_provider.'.$name], $app['security.user_checker'], self::PROVIDER_KEY);
 				};
 
 				return array(

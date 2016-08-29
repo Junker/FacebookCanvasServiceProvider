@@ -6,13 +6,13 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class FacebookCanvasToken extends AbstractToken
 {
-    public $signedRequest;
+    public $fbUid;
 
-    public function __construct($signedRequest, $providerKey, array $roles = array())
+    public function __construct($fbUid, $providerKey, array $roles = array())
     {
         parent::__construct($roles);
 
-        $this->signedRequest = $signedRequest;
+        $this->fbUid = $fbUid;
         $this->providerKey = $providerKey;
 
         // If the user has roles, consider it authenticated
@@ -22,5 +22,22 @@ class FacebookCanvasToken extends AbstractToken
     public function getCredentials()
     {
         return '';
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->fbUid,
+            $this->providerKey,
+            parent::serialize(),
+        ));
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized)
+    {
+        list($this->fbUid, $this->providerKey, $parentStr) = unserialize($serialized);
+        parent::unserialize($parentStr);
     }
 }

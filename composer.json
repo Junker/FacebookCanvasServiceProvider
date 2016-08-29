@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "silex/silex": "1.*",
-        "facebook/php-sdk-v4": "~4@stable"
+        "silex/silex": "1.*"
     },
     "autoload": {
         "psr-0" : {

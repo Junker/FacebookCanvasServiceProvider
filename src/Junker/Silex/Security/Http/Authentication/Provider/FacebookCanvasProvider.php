@@ -26,15 +26,13 @@ class FacebookCanvasProvider implements AuthenticationProviderInterface
      *
      * @param FacebookCanvasUserProviderInterface $userProvider An FacebookCanvasUserProviderInterface instance
      * @param UserCheckerInterface  $userChecker  An UserCheckerInterface instance
-     * @param string                $providerKey  The provider key
-     * @param string                $appSecret  Facebook App secret key     
+     * @param string                $providerKey  The provider key     
      */
-    public function __construct(FacebookCanvasUserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey, $appSecret)
+    public function __construct(FacebookCanvasUserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey)
     {
         $this->userProvider = $userProvider;
         $this->userChecker = $userChecker;
         $this->providerKey = $providerKey;
-        $this->appSecret = $appSecret;
     }
 
     /**
@@ -52,26 +50,11 @@ class FacebookCanvasProvider implements AuthenticationProviderInterface
             return;
         }
 
-        if (!$token->signedRequest) {
+        if (!$token->fbUid) {
             throw new AuthenticationException('FacebookCanvas auth failed');
         }
 
-        $fb_session = null;
-
-        try {
-            $fbSignedRequest = new \Facebook\Entities\SignedRequest($token->signedRequest, '', $this->appSecret);
-            $fb_session = FacebookSession::newSessionFromSignedRequest($fbSignedRequest);
-        } catch (FacebookSDKException $ex) {
-            throw AuthenticationException('FacebookCanvas auth failed: ' . $ex->message);
-        }
-
-        if ($fb_session) {
-            $fb_uid = $fb_session->getSessionInfo()->asArray()['user_id'];
-        } else {
-            throw new AuthenticationException('FacebookCanvas auth failed');
-        }
-
-        $user = $this->userProvider->loadUserByFacebookUid($fb_uid);
+        $user = $this->userProvider->loadUserByFacebookUid($token->fbUid);
 
         if (!$user instanceof UserInterface) {
             throw new AuthenticationServiceException('loadUserByFacebookUID() must return a UserInterface.');
@@ -79,7 +62,7 @@ class FacebookCanvasProvider implements AuthenticationProviderInterface
 
         $this->userChecker->checkPostAuth($user);
 
-        $token = new FacebookCanvasToken($token->signedRequest,
+        $token = new FacebookCanvasToken($token->fbUid,
             $token->providerKey,
             $this->getRoles($user)
         );

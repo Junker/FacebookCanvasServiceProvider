@@ -40,12 +40,13 @@ class FacebookCanvasListener implements ListenerInterface {
 
 
 
-	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $providerKey)
+	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $providerKey, $appSecret)
 	{
 		$this->securityContext = $securityContext;
 		$this->authenticationManager = $authenticationManager;
 		$this->providerKey = $providerKey;
 		$this->dispatcher = $dispatcher;
+		$this->appSecret = $appSecret;
 	}
 
 
@@ -58,12 +59,24 @@ class FacebookCanvasListener implements ListenerInterface {
 	{
 		$request = $event->getRequest();
 
-		if ($signed_request = $this->getSignedRequest($request)) {
-			try {
 
+		if ($signed_request = $this->getSignedRequest($request)) {
+
+			$fb_data = $this->parseSignedRequest($signed_request); 
+
+			$currentToken = $this->securityContext->getToken();
+
+			if ($currentToken instanceof FacebookCanvasToken && is_array($fb_data) && isset($fb_data['user_id']) && $currentToken->fbUid == $fb_data['user_id']) {
+				return;
+			}
+
+			try {
 				$token = new FacebookCanvasToken($signed_request, $this->providerKey);
 
-				$token->signedRequest = $signed_request; 
+				$token->signedRequest = $signed_request;
+
+				if (is_array($fb_data) && isset($fb_data['user_id']))
+					$token->fbUid = $fb_data['user_id'];
 
 				$authToken = $this->authenticationManager->authenticate($token);
 
@@ -86,5 +99,27 @@ class FacebookCanvasListener implements ListenerInterface {
 			return $request->request->get(self::PARAM_NAME);
 
 		return false;
+	}
+
+
+	private function parseSignedRequest($signed_request) {
+	  	list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+
+		// decode the data
+		$sig = self::base64_url_decode($encoded_sig);
+		$data = json_decode(self::base64_url_decode($payload), true);
+
+		// confirm the signature
+		$expected_sig = hash_hmac('sha256', $payload, $this->appSecret, $raw = true);
+
+		if ($sig !== $expected_sig) {
+			return false;
+		}
+
+		return $data;
+	}
+
+	private static function base64_url_decode($input) {
+	  	return base64_decode(strtr($input, '-_', '+/'));
 	}
 }
