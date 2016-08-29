@@ -1,13 +1,13 @@
 <?php
-namespace AimDate\FacebookCanvas\Provider;
+namespace Junker\Silex\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Silex\Component\Security\Http\Authentication;
 
-use AimDate\FacebookCanvas\Security\Http\EntryPoint\FacebookCanvasAuthenticationEntryPoint;
-use AimDate\FacebookCanvas\Security\Http\Authentication\Provider\FacebookCanvasProvider;
-use AimDate\FacebookCanvas\Security\Http\Firewall\FacebookCanvasListener;
+use Junker\Silex\Security\Http\EntryPoint\FacebookCanvasAuthenticationEntryPoint;
+use Junker\Silex\Security\Http\Authentication\Provider\FacebookCanvasProvider;
+use Junker\Silex\Security\Http\Firewall\FacebookCanvasListener;
 
 
 
