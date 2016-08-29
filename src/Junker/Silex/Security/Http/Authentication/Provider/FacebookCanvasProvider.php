@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Junker\Silex\Security\User\FacebookCanvasUserProviderInterface;
 
 class FacebookCanvasProvider implements AuthenticationProviderInterface
 {
