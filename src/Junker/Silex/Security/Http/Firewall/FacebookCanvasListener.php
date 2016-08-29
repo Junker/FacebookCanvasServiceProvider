@@ -9,7 +9,9 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
-
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Http\SecurityEvents;
 use Junker\Silex\Security\Http\Token\FacebookCanvasToken;
 
 
@@ -36,14 +38,14 @@ class FacebookCanvasListener implements ListenerInterface {
 
 
 
-	public function __construct(TokenStorageInterface $securityContext,
-								AuthenticationManagerInterface $authenticationManager,
-								$providerKey)
+	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $providerKey)
 	{
 		$this->securityContext = $securityContext;
 		$this->authenticationManager = $authenticationManager;
 		$this->providerKey = $providerKey;
 	}
+
+
 	/**
 	 * This interface must be implemented by firewall listeners.
 	 *
@@ -53,8 +55,7 @@ class FacebookCanvasListener implements ListenerInterface {
 	{
 		$request = $event->getRequest();
 
-		if ($signed_request = $this->getSignedRequest($request))
-		{
+		if ($signed_request = $this->getSignedRequest($request)) {
 			try {
 
 				$token = new FacebookCanvasToken($signed_request, $this->providerKey);
@@ -64,8 +65,11 @@ class FacebookCanvasListener implements ListenerInterface {
 				$authToken = $this->authenticationManager->authenticate($token);
 
 				$this->securityContext->setToken($authToken);
+
+				$loginEvent = new InteractiveLoginEvent($request, $authToken);
+				$dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+
 			} catch (HttpEncodingException $e) {
-			} catch (\UnexpectedValueException $e) {
 			}
 		}
 	}
