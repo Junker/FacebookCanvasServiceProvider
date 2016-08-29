@@ -36,6 +36,8 @@ class FacebookCanvasListener implements ListenerInterface {
 	 */
 	protected $providerKey;
 
+	protected $dispatcher;
+
 
 
 	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $providerKey)
@@ -43,6 +45,7 @@ class FacebookCanvasListener implements ListenerInterface {
 		$this->securityContext = $securityContext;
 		$this->authenticationManager = $authenticationManager;
 		$this->providerKey = $providerKey;
+		$this->dispatcher = $dispatcher;
 	}
 
 
@@ -67,7 +70,7 @@ class FacebookCanvasListener implements ListenerInterface {
 				$this->securityContext->setToken($authToken);
 
 				$loginEvent = new InteractiveLoginEvent($request, $authToken);
-				$dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+				$this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
 
 			} catch (HttpEncodingException $e) {
 			}
