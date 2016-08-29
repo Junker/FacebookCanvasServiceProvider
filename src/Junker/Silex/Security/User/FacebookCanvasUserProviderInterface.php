@@ -1,10 +1,6 @@
 <?php
-namespace SilexOpauth\Security;
-/**
- * Loads users using opauth result
- *
- * @author Rafal Lindemann
- */
+namespace Junker\Silex\Security\User;
+
 interface FacebookCanvasUserProviderInterface
 {
     public function loadUserByFacebookUid($fbUid);
