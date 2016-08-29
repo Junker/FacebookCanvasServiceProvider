@@ -1,6 +1,6 @@
 <?php
 
-namespace AimDate\FacebookCanvas\Security\Http\Token;
+namespace Junker\Silex\Security\Http\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
