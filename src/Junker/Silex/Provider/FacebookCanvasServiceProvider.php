@@ -30,13 +30,12 @@ class FacebookCanvasServiceProvider implements ServiceProviderInterface
 					return new FacebookCanvasListener($app['security.token_storage'],
 						$app['security.authentication_manager'],
 						$app['dispatcher'],
-						self::PROVIDER_KEY,
 						$options['app_secret']
 					);
 				};
 
 				$app['security.authentication_provider.'.$full_name] = function() use ($app, $name) {
-					return new FacebookCanvasProvider($app['security.user_provider.'.$name], $app['security.user_checker'], self::PROVIDER_KEY);
+					return new FacebookCanvasProvider($app['security.user_provider.'.$name], $app['security.user_checker']);
 				};
 
 				return array(

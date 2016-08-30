@@ -8,12 +8,11 @@ class FacebookCanvasToken extends AbstractToken
 {
     public $fbUid;
 
-    public function __construct($fbUid, $providerKey, array $roles = array())
+    public function __construct($fbUid, array $roles = array())
     {
         parent::__construct($roles);
 
         $this->fbUid = $fbUid;
-        $this->providerKey = $providerKey;
 
         // If the user has roles, consider it authenticated
         $this->setAuthenticated(count($roles) > 0);
@@ -28,7 +27,6 @@ class FacebookCanvasToken extends AbstractToken
     {
         return serialize(array(
             $this->fbUid,
-            $this->providerKey,
             parent::serialize(),
         ));
     }
@@ -37,7 +35,7 @@ class FacebookCanvasToken extends AbstractToken
      */
     public function unserialize($serialized)
     {
-        list($this->fbUid, $this->providerKey, $parentStr) = unserialize($serialized);
+        list($this->fbUid, $parentStr) = unserialize($serialized);
         parent::unserialize($parentStr);
     }
 }

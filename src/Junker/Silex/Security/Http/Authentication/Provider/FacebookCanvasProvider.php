@@ -19,20 +19,16 @@ class FacebookCanvasProvider implements AuthenticationProviderInterface
      */
     protected $userProvider;
 
-    protected $providerKey;
-
     /**
      * Constructor.
      *
      * @param FacebookCanvasUserProviderInterface $userProvider An FacebookCanvasUserProviderInterface instance
-     * @param UserCheckerInterface  $userChecker  An UserCheckerInterface instance
-     * @param string                $providerKey  The provider key     
+     * @param UserCheckerInterface  $userChecker  An UserCheckerInterface instance    
      */
-    public function __construct(FacebookCanvasUserProviderInterface $userProvider, UserCheckerInterface $userChecker, $providerKey)
+    public function __construct(FacebookCanvasUserProviderInterface $userProvider, UserCheckerInterface $userChecker)
     {
         $this->userProvider = $userProvider;
         $this->userChecker = $userChecker;
-        $this->providerKey = $providerKey;
     }
 
     /**
@@ -63,7 +59,6 @@ class FacebookCanvasProvider implements AuthenticationProviderInterface
         $this->userChecker->checkPostAuth($user);
 
         $token = new FacebookCanvasToken($token->fbUid,
-            $token->providerKey,
             $this->getRoles($user)
         );
 

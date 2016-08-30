@@ -34,17 +34,15 @@ class FacebookCanvasListener implements ListenerInterface {
 	/**
 	 * @var string
 	 */
-	protected $providerKey;
 
 	protected $dispatcher;
 
 
 
-	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $providerKey, $appSecret)
+	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $appSecret)
 	{
 		$this->securityContext = $securityContext;
 		$this->authenticationManager = $authenticationManager;
-		$this->providerKey = $providerKey;
 		$this->dispatcher = $dispatcher;
 		$this->appSecret = $appSecret;
 	}
@@ -71,9 +69,7 @@ class FacebookCanvasListener implements ListenerInterface {
 			}
 
 			try {
-				$token = new FacebookCanvasToken($signed_request, $this->providerKey);
-
-				$token->signedRequest = $signed_request;
+				$token = new FacebookCanvasToken($signed_request);
 
 				if (is_array($fb_data) && isset($fb_data['user_id']))
 					$token->fbUid = $fb_data['user_id'];
