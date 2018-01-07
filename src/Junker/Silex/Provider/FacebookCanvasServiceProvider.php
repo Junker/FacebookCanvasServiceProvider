@@ -30,7 +30,8 @@ class FacebookCanvasServiceProvider implements ServiceProviderInterface
 					return new FacebookCanvasListener($app['security.token_storage'],
 						$app['security.authentication_manager'],
 						$app['dispatcher'],
-						$options['app_secret']
+						$options['app_secret'],
+						isset($options['skip_false_auth']) ? $options['skip_false_auth'] : FALSE
 					);
 				};
 

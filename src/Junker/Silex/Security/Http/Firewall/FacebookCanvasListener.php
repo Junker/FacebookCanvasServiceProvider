@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Junker\Silex\Security\Http\Token\FacebookCanvasToken;
-
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class FacebookCanvasListener implements ListenerInterface {
 
@@ -39,12 +39,13 @@ class FacebookCanvasListener implements ListenerInterface {
 
 
 
-	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $appSecret)
+	public function __construct(TokenStorageInterface $securityContext,	AuthenticationManagerInterface $authenticationManager, EventDispatcherInterface $dispatcher, $appSecret, $skipFalseAuth = FALSE)
 	{
 		$this->securityContext = $securityContext;
 		$this->authenticationManager = $authenticationManager;
 		$this->dispatcher = $dispatcher;
 		$this->appSecret = $appSecret;
+		$this->skipFalseAuth = $skipFalseAuth;
 	}
 
 
@@ -81,6 +82,9 @@ class FacebookCanvasListener implements ListenerInterface {
 				$loginEvent = new InteractiveLoginEvent($request, $authToken);
 				$this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
 
+			} catch (AuthenticationException $e) {
+				if (!$this->skipFalseAuth)
+					throw $e;
 			} catch (HttpEncodingException $e) {
 			}
 		}
