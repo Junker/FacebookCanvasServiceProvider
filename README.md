@@ -2,12 +2,12 @@
 Facebook Canvas Service Provider for Silex
 
 ## Requirements
-silex 1.x
+silex 2.x
 
-##Installation
+## Installation
 The best way to install FacebookCanvasServiceProvider is to use a [Composer](https://getcomposer.org/download):
 
-    php composer.phar require junker/facebook-canvas-service-provider
+    composer require junker/facebook-canvas-service-provider
 
 ## Examples
 

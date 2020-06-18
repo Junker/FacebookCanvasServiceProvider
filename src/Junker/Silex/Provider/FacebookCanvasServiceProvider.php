@@ -1,8 +1,8 @@
 <?php
 namespace Junker\Silex\Provider;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Component\Security\Http\Authentication;
 
 use Junker\Silex\Security\Http\EntryPoint\FacebookCanvasAuthenticationEntryPoint;
@@ -15,9 +15,8 @@ class FacebookCanvasServiceProvider implements ServiceProviderInterface
 {
 	const PROVIDER_KEY = 'facebook_canvas';
 
-	public function register(Application $app)
+	public function register(Container $app)
 	{
-		
 		$app['security.authentication_listener.factory.'.self::PROVIDER_KEY] = $app->protect(function ($name, $options) use ($app) {
 
 				$full_name = $name.'.'.self::PROVIDER_KEY;
@@ -46,9 +45,5 @@ class FacebookCanvasServiceProvider implements ServiceProviderInterface
 					'pre_auth'
 				);
 		});
-	}
-
-	public function boot(Application $app)
-	{
 	}
 }
