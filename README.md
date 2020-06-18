@@ -14,7 +14,7 @@ The best way to install FacebookCanvasServiceProvider is to use a [Composer](htt
 ```php
 use Junker\Silex\Provider\FacebookCanvasServiceProvider;
 
-$app['users'] = $app->share(function() use ($app) { return new MyApp\UserProvider($app['db']); });
+$app['users'] = function() use ($app) { return new MyApp\UserProvider($app['db']); };
 
 $app['security.firewalls'] =  [
 	'fb_canvas' => [		
