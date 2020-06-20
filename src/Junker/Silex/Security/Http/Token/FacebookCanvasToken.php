@@ -23,6 +23,20 @@ class FacebookCanvasToken extends AbstractToken
         return '';
     }
 
+    public function __serialize(): array
+    {
+        return [$this->fbUid, parent::__serialize()];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        list($this->fbUid, $parentData) = $data;
+        $parentData = \is_array($parentData) ? $parentData : unserialize($parentData);
+        parent::__unserialize($parentData);
+    }
+
+
+    // deprecated sience 4.3
     public function serialize()
     {
         return serialize(array(
@@ -30,9 +44,8 @@ class FacebookCanvasToken extends AbstractToken
             parent::serialize(),
         ));
     }
-    /**
-     * {@inheritdoc}
-     */
+
+    // deprecated sience 4.3
     public function unserialize($serialized)
     {
         list($this->fbUid, $parentStr) = unserialize($serialized);
