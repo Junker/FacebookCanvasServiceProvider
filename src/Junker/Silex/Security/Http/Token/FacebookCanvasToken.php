@@ -34,21 +34,4 @@ class FacebookCanvasToken extends AbstractToken
         $parentData = \is_array($parentData) ? $parentData : unserialize($parentData);
         parent::__unserialize($parentData);
     }
-
-
-    // deprecated sience 4.3
-    public function serialize()
-    {
-        return serialize(array(
-            $this->fbUid,
-            parent::serialize(),
-        ));
-    }
-
-    // deprecated sience 4.3
-    public function unserialize($serialized)
-    {
-        list($this->fbUid, $parentStr) = unserialize($serialized);
-        parent::unserialize($parentStr);
-    }
 }
